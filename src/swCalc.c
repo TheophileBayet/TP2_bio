@@ -22,7 +22,7 @@ struct matrix *swInitMat(char *s1, char *s2){
   struct cell *cells= mallocOrDie(w*h*sizeof(struct cell),"E: failed to create the cells tab\n");
   /* pointer to array of w*h cells
 			       cells[w*i+j] contains cell (i,j) */
-  for(int i = 0;i<w;i++){
+  for(int i = 0 ; i<h ; i++){
     cells[i].score =0.0;
     cells[i].prevs=0;
     cells[w*i].score=0.0;
