@@ -23,13 +23,13 @@ struct matrix *swInitMat(char *s1, char *s2){
   struct cell *cells= mallocOrDie(w*h*sizeof(struct cell),"E: failed to create the cells tab\n");
   /* pointer to array of w*h cells
 			       cells[w*i+j] contains cell (i,j) */
-  for(int i = 0;i<w;i++){
-    cells[i].score =0.0;
-    cells[i].prevs=0;
+  for(int i = 0 ; i<w ; i++){
+      cells[i].score =0.0;
+      cells[i].prevs=0;
   }
-for(int i = 0;i<h;i++){
-    cells[w*i].score=0.0;
-    cells[w*i].prevs=0;
+  for(int i = 0; i<h ;i++){
+      cells[w*i].score=0.0;
+      cells[w*i].prevs=0;
   }
   mat->cells =cells;
   return mat;
@@ -81,9 +81,27 @@ void swFillMat(struct matrix *mat, struct cost *cost, char *s1, char *s2) {
 
 /* free all allocated memory in mat */
 void swFreeMat(struct matrix *mat){
+    fprintf(stdout, "\t\t\tswFreeMat\n");
+    if (mat != NULL && mat->cells != NULL) {
+        free(mat->cells);
+    }
+    if (mat != NULL) {
+        free(mat);
+    }
 }
 
 /* print contents of matrix, for debugging */
 void swPrintMat(struct matrix *mat){
-
+    if (mat != NULL && mat->cells != NULL) {
+        fprintf(stdout, "Matrice des scores\n");
+        for (unsigned int i = 0 ; i < mat->h ; i++) {
+            for (unsigned int j = 0 ; j < mat->w ; j++) {
+                fprintf(stdout, "\t%f", mat->cells[mat->w*i+j].score);
+            }
+            fprintf(stdout, "\n");
+        }
+    } else {
+        fprintf(stdout, "La matrice n'est pas correctement initialisée");
+    }
+    fprintf(stdout, "\n");
 }
