@@ -15,8 +15,8 @@
    alignment of strings s1 and s2 */
 struct matrix *swInitMat(char *s1, char *s2){
   struct matrix *mat = mallocOrDie(sizeof(struct matrix), "E: failed to create matrix\n") ;
-  int w = strlen(s1);
-  int h = strlen(s2);
+  int w = strlen(s1)+1;
+  int h = strlen(s2)+1;
   mat -> w =  w;
   mat -> h = h ;
   struct cell *cells= mallocOrDie(w*h*sizeof(struct cell),"E: failed to create the cells tab\n");
