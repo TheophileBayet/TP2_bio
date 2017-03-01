@@ -40,9 +40,20 @@ void swFillMat(struct matrix *mat, struct cost *cost, char *s1, char *s2) {
 
 /* free all allocated memory in mat */
 void swFreeMat(struct matrix *mat){
+    if (mat != NULL && mat->cells != NULL) {
+        free(mat->cells);
+    }
+    if (mat != NULL) {
+        free(mat);
+    }
 }
 
 /* print contents of matrix, for debugging */
 void swPrintMat(struct matrix *mat){
-
+    for (unsigned int i = 0 ; i < mat->h ; i++) {
+        for (unsigned int j = 0 ; j < mat->w ; j++) {
+            fprintf(stdout, "%f\t", mat->cells[mat->w*i+j].score); 
+        }
+        fprintf(stdout, "\n"); 
+    }
 }
