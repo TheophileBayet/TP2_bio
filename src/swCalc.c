@@ -14,15 +14,20 @@
 /* allocate and initialize (first row and col) a matrix for SW
    alignment of strings s1 and s2 */
 struct matrix *swInitMat(char *s1, char *s2){
-  /* récupérer les longueurs et initialiser la matrice */
-  /* premier jet : taille 4x4*/
   struct matrix *mat = mallocOrDie(sizeof(struct matrix), "E: failed to create matrix\n") ;
-  mat -> w = 4 ;
-  mat -> h = 4 ;/*
-  for (int i = 0;i<w*h-1;i++){
-    struct cell cell = mallocOrDie(sizeof(struct cell),"E: failed to create cell")
-    mat -> cells[w*i+h]=cell;
-  }*/
+  int w = strlen(s1);
+  int h = strlen(s2);
+  mat -> w =  w;
+  mat -> h = h ;
+  struct cell *cells= mallocOrDie(w*h*sizeof(struct cell),"E: failed to create the cells tab\n");
+  /* pointer to array of w*h cells
+			       cells[w*i+j] contains cell (i,j) */
+  for(int i = 0;i<w;i++){
+    cells[i].score =0.0;
+    cells[i].prevs=0;
+    cells[w*i].score=0.0;
+    cells[w*i].prevs=0;
+  }
   return mat;
 }
 
