@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <float.h>
 
@@ -25,6 +26,8 @@ struct matrix *swInitMat(char *s1, char *s2){
   for(int i = 0;i<w;i++){
     cells[i].score =0.0;
     cells[i].prevs=0;
+  }
+for(int i = 0;i<h;i++){
     cells[w*i].score=0.0;
     cells[w*i].prevs=0;
   }
