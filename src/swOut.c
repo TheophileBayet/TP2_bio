@@ -2,7 +2,7 @@
 
 #include "swOut.h"
 
-void printBestAlis(struct matrix *mat, struct cost *cost, char *s1, char *s2) 
+void printBestAlis(struct matrix *mat, struct cost *cost, char *s1, char *s2)
 {
     fprintf(stdout, "printBestAlis\n");
 
@@ -27,7 +27,27 @@ void printBestAlis(struct matrix *mat, struct cost *cost, char *s1, char *s2)
     
     unsigned int count = strlen(s1_res) - 1; 
 
-    while (i!=0 || j!=0){
+    // on commence à la case max
+    //
+
+    int max = 0;
+    for (uint32_t k1 = 0; k1<mat->h; k1++){
+        for (uint32_t k2 = 0; k2<mat->w; k2++){
+            if (mat->cells[mat->w*k1+k2].score>max){
+                i=k1;
+                j=k2;
+                max=mat->cells[mat->w*k1+k2].score;
+            }
+        }
+    }
+    printf("max = %d en %d, %d \n",max,i,j);
+    int ideb=i-1;
+    int jdeb=j-1;
+    // en considérant la case à laquelle on commence, on peut remplir en partie les chaines de résultat
+    // remplir à partir d'où jusqu'à où ? OU NE PAS REMPLIR LOL parce que ça ne compte pas
+
+
+    while (i!=0 && j!=0){
 
         //un seul chemin, on privilégie la diag (prevs&1) (arbitraire)
         // à changer pour tous les chemins
@@ -73,6 +93,8 @@ void printBestAlis(struct matrix *mat, struct cost *cost, char *s1, char *s2)
         count--;
     }
     //printf("Résultat final : \n\t%s\n\t%s\n", s1_res + count + 1, s2_res + count + 1);
-    printf("Résultat final : \n\t%s\n\t%s\n", s1_res + count + 1, s2_res + count + 1);
+    printf("Final result : \n");
+    printf("s1_res : %s\ns2_res : %s\n", s1_res + count + 1, s2_res + count + 1);
+    printf("Best match is at s1[%d:%d] and s2[%d:%d]\n", j, jdeb, i, ideb);
 
 }
