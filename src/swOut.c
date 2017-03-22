@@ -13,7 +13,7 @@ void printBestAlis(struct matrix *mat, struct cost *cost, char *s1, char *s2)
     char s1_res[strlen(s1)+strlen(s2)]; // résultat avec letters et '-' pour s1
     char s2_res[strlen(s1)+strlen(s2)]; // résultat avec letters et '-' pour s1
     
-    for (uint32_t k = 0 ; k < strlen(s1) + strlen(s2) ; k ++) {
+    for (uint32_t k = 0 ; k <= strlen(s1) + strlen(s2) ; k ++) {
         s1_res[k] = '.';
         s2_res[k] = '.';
     }
