@@ -35,13 +35,31 @@ struct matrix *swInitMat(char *s1, char *s2){
   return mat;
 }
 
-double* MAX(struct cell c1, struct cell c2, struct cell c3){
+double* MAX(struct cell c1, struct cell c2, struct cell c3, struct cost *cost,char s1, char s2){
   double *ret = mallocOrDie(4*sizeof(double),"E:failed to create tab in MAX");
-  //TODO : implémenter la fonction MAX pour qu'elle retourne bien ce qui est demandé.
-  ret[0]=c1.score+c2.score+c3.score;
   ret[1]=0;
   ret[2]=0;
   ret[3]=0;
+  //TODO : implémenter la fonction MAX pour qu'elle retourne bien ce qui est demandé.
+  int sc1 ;
+  int sc2;
+  int sc3;
+  sc1 = c1.score + cost->subst(s1,s2);
+  sc2 = c2.score + cost->indelOpen ;
+  sc3 = c3.score + cost->indelOpen;
+  if(sc1<sc2){
+    if (sc2<sc3){ret[0]=sc3; ret[3]=1;}
+    else{ret[0]=sc2; ret[2]=1;}
+  }else{
+    if(sc1<sc3){ret[0]=sc3; ret[3]=1;}
+    else{ret[0]=sc1;ret[1]=1;}
+  }
+  if(ret[0]<0){
+    ret[0]=0;
+    ret[1]=0;
+    ret[2]=0;
+    ret[3]=0;
+  }
   return ret;
 }
 
@@ -61,7 +79,7 @@ void swFillMat(struct matrix *mat, struct cost *cost, char *s1, char *s2) {
       // Fonction MAX sur les trois précédents, conserver la valeur dans la cell
       // et modifier les prevs !
       double* max_tab;
-      max_tab=MAX(mat->cells[w*(i-1)+j-1],mat->cells[w*(i-1)+j],mat->cells[w*i+j-1]);
+      max_tab=MAX(mat->cells[w*(i-1)+j-1],mat->cells[w*(i-1)+j],mat->cells[w*i+j-1],cost,s1[i-1],s2[j-1]);
       mat->cells[w*i+j].score=max_tab[0];
       mat->cells[w*i+j].prevs=0;
       if(max_tab[1]){
