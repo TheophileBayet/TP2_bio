@@ -3,7 +3,7 @@
 
 #include "swCalc.h"
 #include "swCost.h"
-
+#include <string.h>
 /* Find highest scoring local alignment(s) in mat, and print to stdout
    the corresponding best alignments.
    mat must have been filled with scores and prevs.
