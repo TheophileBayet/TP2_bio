@@ -74,8 +74,8 @@ double* MAX(struct cell c1, struct cell c2, struct cell c3, struct cost *cost,ch
 void swFillMat(struct matrix *mat, struct cost *cost, char *s1, char *s2) {
   int w = strlen(s1)+1;
   int h = strlen(s2)+1;
-  for(int i =1;i<w;i++){
-    for(int j=1;j<h;j++){
+  for(int i =1;i<h;i++){
+    for(int j=1;j<w;j++){
       // Fonction MAX sur les trois précédents, conserver la valeur dans la cell
       // et modifier les prevs !
       double* max_tab;
