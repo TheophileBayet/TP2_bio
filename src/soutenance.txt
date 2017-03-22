@@ -1,0 +1,13 @@
+Compte rendu et archive à envoyer par mail au plus tard le 30 mars
+
+archive : tout le code dans un tgz
+rendu : pdf de quelques pages
+    - Ce qui marche/qui ne marche pas, pourquoi
+    - Questions des fichiers exemples, quelques répondes à chercher sur wikipédia. Pourquoi ces questions là...
+
+Présentation : 20 minutes
+Arriver avec un ordinateur/une clef usb qui contient le rapport
+10 min de présentation :
+    - Ne pas présenter le sujet ça ne sert à rien
+10 min de questions :
+
