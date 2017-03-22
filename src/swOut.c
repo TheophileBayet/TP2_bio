@@ -2,23 +2,43 @@
 
 #include "swOut.h"
 
-void printBestAlis(struct matrix *mat, struct cost *cost, char *s1, char *s2) 
+void printBestAlis(struct matrix *mat, struct cost *cost, char *s1, char *s2)
 {
     fprintf(stdout, "printBestAlis\n");
 
     // on commence tout en bas (for now)
     unsigned int i = mat->h-1; // -1 ?
     unsigned int j = mat->w-1; // same
-
+    int l_tot = strlen(s1)+strlen(s2);
     char s1_res[strlen(s1)+strlen(s2)]; // résultat avec letters et '-' pour s1
     char s2_res[strlen(s1)+strlen(s2)]; // résultat avec letters et '-' pour s1
-    
+
     for (uint32_t k = 0 ; k < strlen(s1) + strlen(s2) ; k ++) {
         s1_res[k] = '.';
         s2_res[k] = '.';
     }
-    
-    while (i!=0 || j!=0){
+
+    // on commence à la case max
+    //
+
+    int max = 0;
+    for (uint32_t k1 = 0; k1<mat->h; k1++){
+        for (uint32_t k2 = 0; k2<mat->w; k2++){
+            if (mat->cells[mat->w*k1+k2].score>max){
+                i=k1;
+                j=k2;
+                max=mat->cells[mat->w*k1+k2].score;
+            }
+        }
+    }
+    printf("max = %d en %d, %d \n",max,i,j);
+    int ideb=i-1;
+    int jdeb=j-1;
+    // en considérant la case à laquelle on commence, on peut remplir en partie les chaines de résultat
+    // remplir à partir d'où jusqu'à où ? OU NE PAS REMPLIR LOL parce que ça ne compte pas
+
+
+    while (i!=0 && j!=0){
 
         //un seul chemin, on privilégie la diag (prevs&1) (arbitraire)
         // à changer pour tous les chemins
@@ -35,38 +55,41 @@ void printBestAlis(struct matrix *mat, struct cost *cost, char *s1, char *s2)
             case 3 :
             case 5 :
             case 7 :
-                printf("Case 1\n");
-                s1_res[i+j] = s1[j-1];
-                s2_res[i+j] = s2[i-1];
-                //s1_res = strcat(s1[j-1], s1_res);
-                //s2_res = strcat(s2[i-1], s2_res);
-                i--; j--;
-                break;
+            printf("Case 1\n");
+            s1_res[i+j] = s1[j-1];
+            s2_res[i+j] = s2[i-1];
+            //s1_res = strcat(s1[j-1], s1_res);
+            //s2_res = strcat(s2[i-1], s2_res);
+            i--; j--;
+            break;
 
             case 2 :
             case 6 :
-                printf("Case 2\n");
-                s1_res[i+j] = s1[j-1];
-                s2_res[i+j] = '-';
-                //s1_res = strcat(s1[j-1],s1_res);
-                //s2_res = strcat("-",s2_res);
-                j--;
-                break;
+            printf("Case 2\n");
+            s1_res[i+j] = s1[j-1];
+            s2_res[i+j] = '-';
+            //s1_res = strcat(s1[j-1],s1_res);
+            //s2_res = strcat("-",s2_res);
+            j--;
+            break;
 
             case 4 :
-                printf("Case 4\n");
-                s1_res[i+j] = '-';
-                s2_res[i+j] = s2[i-1];
-                //s1_res = strcat("-",s1_res);
-                //s2_res = strcat(s2[i-1],s2_res);
-                i--;
-                break;
+            printf("Case 4\n");
+            s1_res[i+j] = '-';
+            s2_res[i+j] = s2[i-1];
+            //s1_res = strcat("-",s1_res);
+            //s2_res = strcat(s2[i-1],s2_res);
+            i--;
+            break;
 
             default :
-                fprintf(stderr, "%s\nScore %u\n", "Pas de cas correspondant pour prevs", cur.prevs);
-                exit(1);
+            fprintf(stderr, "%s\nScore %u\n", "Pas de cas correspondant pour prevs", cur.prevs);
+            exit(1);
 
         }
     }
+    printf("Final result : \n");
+    printf("s1_res : %s ; s2_res : %s\n", s1_res, s2_res);
+    printf("Best match is at s1[%d:%d] and s2[%d:%d]\n", j, jdeb, i, ideb);
 
 }
