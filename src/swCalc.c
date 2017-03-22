@@ -40,7 +40,6 @@ double* MAX(struct cell c1, struct cell c2, struct cell c3, struct cost *cost,ch
   ret[1]=0;
   ret[2]=0;
   ret[3]=0;
-  //TODO : implémenter la fonction MAX pour qu'elle retourne bien ce qui est demandé.
   int sc1 ;
   int sc2;
   int sc3;
@@ -91,6 +90,7 @@ void swFillMat(struct matrix *mat, struct cost *cost, char *s1, char *s2) {
       if(max_tab[3]){
         mat->cells[w*i+j].prevs+=4;
       }
+      free(max_tab);
     }
   }
 }
