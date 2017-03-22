@@ -19,13 +19,21 @@ int main(void)
 
 	/* affine cost for long gaps eg spliced RNA on genome */
 	struct cost *cost = costDna(-100,-0.05);
-	struct matrix *mat = swInitMat(s1,s2);
-	swFillMat(mat,cost,s1,s2);
-	/* for debugging you can uncomment:
-	   swPrintMat(mat); */
-	printBestAlis(mat,cost,s1,s2);
+	struct matrix *D = swInitMat(s1,s2);
+	struct matrix *V = swInitMat(s1,s2);
+	struct matrix *H = swInitMat(s1,s2);
+	swFillDMat(D,cost,s1,s2);
+	swFillVMat(V,cost,s1,s2);
+	swFillHMat(H,cost,s1,s2);
+	/* for debugging you can uncomment:*/
+	   swPrintMat(D);
+		 swPrintMat(V);
+		 swPrintMat(H);
+	/*printBestAlis(mat,cost,s1,s2);*/
 
-	swFreeMat(mat);
+	swFreeMat(D);
+	swFreeMat(V);
+	swFreeMat(H);
 	free(cost);
 	free(s1);
 	free(s2);
