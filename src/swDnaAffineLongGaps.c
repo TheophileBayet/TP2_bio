@@ -22,15 +22,17 @@ int main(void)
 	struct matrix *D = swInitMat(s1,s2);
 	struct matrix *V = swInitMat(s1,s2);
 	struct matrix *H = swInitMat(s1,s2);
-	swFillDMat(D,cost,s1,s2);
-	swFillVMat(V,cost,s1,s2);
-	swFillHMat(H,cost,s1,s2);
-	/* for debugging you can uncomment:*/
-	   swPrintMat(D);
-		 swPrintMat(V);
-		 swPrintMat(H);
-	/*printBestAlis(mat,cost,s1,s2);*/
 
+	//printf(" Fin d'initialisation des matrices \n");
+	swFillDMat(D,V,H,cost,s1,s2);
+	swFillVMat(D,V,H,cost,s1,s2);
+	swFillHMat(D,V,H,cost,s1,s2);
+//	printf("Fin de remplissage des matrices\n");
+	/* for debugging you can uncomment:*/
+	  // swPrintMat(D);
+		 //swPrintMat(V);
+		 //swPrintMat(H);
+	/*printBestAlis(mat,cost,s1,s2);*/
 	swFreeMat(D);
 	swFreeMat(V);
 	swFreeMat(H);

@@ -69,9 +69,9 @@ double* MAX_D(struct cell c1, struct cell c2, struct cell c3, struct cost *cost,
   ret[1]=0;
   ret[2]=0;
   ret[3]=0;
-  int sc1 ;
-  int sc2;
-  int sc3;
+  int sc1=0;
+  int sc2=0;
+  int sc3=0;
   sc1 = c1.score + cost->subst(s1,s2);
   sc2 = c2.score + cost->subst(s1,s2);
   sc3 = c3.score + cost->subst(s1,s2);

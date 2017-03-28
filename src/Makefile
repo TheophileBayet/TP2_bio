@@ -6,6 +6,8 @@ OBJS = swCost.o mem.o swCalc.o swOut.o swGetSeq.o
 
 etu: swDnaLinear
 
+aff : swDnaAffineLongGaps
+
 all: swDnaLinear swDnaAffine swDnaAffineLongGaps swProtAffine
 
 swDnaLinear: swDnaLinear.o $(OBJS)
@@ -28,4 +30,3 @@ swProtAffine: swProtAffine.o $(OBJS)
 
 clean:
 	rm -f *.o *.d *~
-
