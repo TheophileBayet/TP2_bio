@@ -177,7 +177,83 @@ void swFillMat(struct matrix *mat, struct cost *cost, char *s1, char *s2) {
   }
 }
 
+void swFillDVH(struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) {
+    int w = strlen(s1)+1;
+    int h = strlen(s2)+1;
 
+    for(int i =1;i<h;i++){
+        for(int j=1;j<w;j++){
+            swFillDMat(i,j, D, V, H, cost, s1, s2);
+            swFillVMat(i,j, D, V, H, cost, s1, s2);
+            swFillHMat(i,j, D, V, H, cost, s1, s2);
+        }
+    }
+}
+
+void swFillDMat(int i, int j, struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) {
+    int w = strlen(s1)+1;
+    int h = strlen(s2)+1;
+    // TODO : modifier les accès aux cellules et impélmenter le MAX_D
+    // Fonction MAX sur les trois précédents, conserver la valeur dans la cell
+    // et modifier les prevs !
+    double* max_tab;
+    max_tab=MAX_D(D->cells[w*(i-1)+j-1],V->cells[w*(i-1)+j-1],H->cells[w*(i-1)+j-1],cost,s1[j-1],s2[i-1]);
+    D->cells[w*i+j].score=max_tab[0];
+    D->cells[w*i+j].prevs=0;
+    if(max_tab[1]){
+        D->cells[w*i+j].prevs+=1 + 8;
+    }
+    if(max_tab[2]){
+        D->cells[w*i+j].prevs+=2 + 16;
+    }
+    if(max_tab[3]){
+        D->cells[w*i+j].prevs+=4 + 32;
+    }
+    free(max_tab);
+}
+
+void swFillVMat(int i, int j, struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) {
+    int w = strlen(s1)+1;
+    int h = strlen(s2)+1;
+    // Fonction MAX sur les trois précédents, conserver la valeur dans la cell
+    // et modifier les prevs !
+    double* max_tab;
+    max_tab=MAX_V(D->cells[w*(i-1)+j],V->cells[w*(i-1)+j],H->cells[w*(i-1)+j],cost);
+    V->cells[w*i+j].score=max_tab[0];
+    V->cells[w*i+j].prevs=0;
+    if(max_tab[1]){
+        V->cells[w*i+j].prevs+=1 + 8;
+    }
+    if(max_tab[2]){
+        V->cells[w*i+j].prevs+=2 + 16;
+    }
+    if(max_tab[3]){
+        V->cells[w*i+j].prevs+=4 + 32;
+    }
+    free(max_tab);
+}
+
+void swFillHMat(int i, int j, struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) {
+    int w = strlen(s1)+1;
+    int h = strlen(s2)+1;
+    // Fonction MAX sur les trois précédents, conserver la valeur dans la cell
+    // et modifier les prevs !
+    double* max_tab;
+    max_tab=MAX_H(D->cells[w*i+j-1],V->cells[w*i+j-1],H->cells[w*i+j-1],cost);
+    H->cells[w*i+j].score=max_tab[0];
+    H->cells[w*i+j].prevs=0;
+    if(max_tab[1]){
+        H->cells[w*i+j].prevs+=1 + 8;
+    }
+    if(max_tab[2]){
+        H->cells[w*i+j].prevs+=2 + 16;
+    }
+    if(max_tab[3]){
+        H->cells[w*i+j].prevs+=4 + 32;
+    }
+    free(max_tab);
+}
+/*
 void swFillDMat(struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) {
   int w = strlen(s1)+1;
   int h = strlen(s2)+1;
@@ -253,6 +329,7 @@ void swFillHMat(struct matrix *D,struct matrix *V,struct matrix *H, struct cost 
     }
   }
 }
+*/
 
 /* free all allocated memory in mat */
 void swFreeMat(struct matrix *mat){

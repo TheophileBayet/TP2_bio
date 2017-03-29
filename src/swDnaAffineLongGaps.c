@@ -24,14 +24,20 @@ int main(void)
 	struct matrix *H = swInitMat(s1,s2);
 
 	//printf(" Fin d'initialisation des matrices \n");
-	swFillDMat(D,V,H,cost,s1,s2);
+    swFillDVH(D,V,H,cost,s1,s2);
+	/*
+    swFillDMat(D,V,H,cost,s1,s2);
 	swFillVMat(D,V,H,cost,s1,s2);
 	swFillHMat(D,V,H,cost,s1,s2);
+    */
 //	printf("Fin de remplissage des matrices\n");
 	/* for debugging you can uncomment:*/
-	  // swPrintMat(D);
-		 //swPrintMat(V);
-		 //swPrintMat(H);
+    swPrintMat(D);
+    printf("\n Test \n");
+	swPrintMat(V);
+    printf("\n");
+	swPrintMat(H);
+    printf("\n");
 	/*printBestAlis(mat,cost,s1,s2);*/
 	swFreeMat(D);
 	swFreeMat(V);

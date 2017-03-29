@@ -16,7 +16,7 @@
 */
 struct cell {
 	double score;
-	uint8_t prevs;
+	uint16_t prevs;
 };
 
 struct matrix {
@@ -39,13 +39,18 @@ struct matrix *swInitMat(char *s1, char *s2);
 */
 void swFillMat(struct matrix *mat, struct cost *cost, char *s1, char *s2) ;
 
+
+void swFillDVH(struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) ;
+
+
 /* Fill the D matrix, using Gotoh with an affine indel model using
    cost->indelOpen and cost->indelExtend.
    Preconditions:
    - D is correctly allocated and initialized (by swInitMat)
    - cost->subst is defined for each pair of letters in s1 and s2
 */
-void swFillDMat(struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) ;
+void swFillDMat(int i, int j, struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) ;
+//void swFillDMat(struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) ;
 
 /* Fill the V matrix, using Gotoh with an affine indel model using
    cost->indelOpen and cost->indelExtend.
@@ -54,7 +59,8 @@ void swFillDMat(struct matrix *D,struct matrix *V,struct matrix *H, struct cost 
    - cost->subst is defined for each pair of letters in s1 and s2
 */
 
-void swFillVMat(struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) ;
+void swFillVMat(int i, int j, struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) ;
+//void swFillVMat(struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) ;
 
 /* Fill the H matrix, using Gotoh with an affine indel model using
    cost->indelOpen and cost->indelExtend.
@@ -62,7 +68,8 @@ void swFillVMat(struct matrix *D,struct matrix *V,struct matrix *H, struct cost 
    - H is correctly allocated and initialized (by swInitMat)
    - cost->subst is defined for each pair of letters in s1 and s2
 */
-void swFillHMat(struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) ;
+void swFillHMat(int i, int j, struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) ;
+//void swFillHMat(struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) ;
 
 /* free all allocated memory in mat */
 void swFreeMat(struct matrix *mat);
