@@ -201,13 +201,13 @@ void swFillDMat(int i, int j, struct matrix *D,struct matrix *V,struct matrix *H
     D->cells[w*i+j].score=max_tab[0];
     D->cells[w*i+j].prevs=0;
     if(max_tab[1]){
-        D->cells[w*i+j].prevs+=1 + 8;
+        D->cells[w*i+j].prevs+=1;
     }
     if(max_tab[2]){
-        D->cells[w*i+j].prevs+=2 + 16;
+        D->cells[w*i+j].prevs+=2;
     }
     if(max_tab[3]){
-        D->cells[w*i+j].prevs+=4 + 32;
+        D->cells[w*i+j].prevs+=4;
     }
     free(max_tab);
 }
@@ -222,13 +222,13 @@ void swFillVMat(int i, int j, struct matrix *D,struct matrix *V,struct matrix *H
     V->cells[w*i+j].score=max_tab[0];
     V->cells[w*i+j].prevs=0;
     if(max_tab[1]){
-        V->cells[w*i+j].prevs+=1 + 8;
+        V->cells[w*i+j].prevs+=1;
     }
     if(max_tab[2]){
-        V->cells[w*i+j].prevs+=2 + 16;
+        V->cells[w*i+j].prevs+=2;
     }
     if(max_tab[3]){
-        V->cells[w*i+j].prevs+=4 + 32;
+        V->cells[w*i+j].prevs+=4;
     }
     free(max_tab);
 }
@@ -243,13 +243,13 @@ void swFillHMat(int i, int j, struct matrix *D,struct matrix *V,struct matrix *H
     H->cells[w*i+j].score=max_tab[0];
     H->cells[w*i+j].prevs=0;
     if(max_tab[1]){
-        H->cells[w*i+j].prevs+=1 + 8;
+        H->cells[w*i+j].prevs+=1;
     }
     if(max_tab[2]){
-        H->cells[w*i+j].prevs+=2 + 16;
+        H->cells[w*i+j].prevs+=2;
     }
     if(max_tab[3]){
-        H->cells[w*i+j].prevs+=4 + 32;
+        H->cells[w*i+j].prevs+=4;
     }
     free(max_tab);
 }
