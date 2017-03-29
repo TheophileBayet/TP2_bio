@@ -135,10 +135,15 @@ void printAllPaths(int i, int j, struct matrix *mat, struct cost *cost, char *s1
         }
         count--;
     }
-    //printf("Résultat final : \n\t%s\n\t%s\n", s1_res + count + 1, s2_res + count + 1);
+
+    //setbuf(stdout, _IONBF);
+
     printf("Final result : \n");
     printf("s1_res : %s\ns2_res : %s\n", s1_res + count + 1, s2_res + count + 1);
     printf("Best match is at s1[%d:%d] and s2[%d:%d]\n", jfin, jdeb, ifin, ideb);
+    
+    //fflush(stdout);
+
     //printf("\n\nFinal result : \rs1_res : %s\rs2_res : %s\rBest match is at s1[%d:%d] and s2[%d:%d]\r\n\n", s1_res + count + 1, s2_res + count + 1, jfin, jdeb, ifin, ideb);
     
 }
@@ -176,50 +181,28 @@ void printBestAlisGotoh(struct matrix *D, struct matrix *V, struct matrix *H, /*
     int jdeb=j-1;
     struct cell cur = D->cells[i*D->w+j];
     while (i!=0 && j!=0){
-        /*
-        printf("Résultat intermédiaire : %s\n", s1_res + count + 1);
-        printf("Résultat intermédiaire : %s\n\n", s1_res);
-        // màj des chemins selon déplacement optimal trouvé        struct cell cur = mat->cells[i*mat->w+j];
-
-        printf("Résultat intermédiaire : %s\n", s1_res + count + 1);
-        printf("Résultat intermédiaire : %s\n\n", s1_res);
-        // màj des chemins selon déplacement optimal trouvé
-        */
         switch(cur.prevs){
 
             case 1 :
             case 3 :
             case 5 :
             case 7 :
-                if (s1[j-1] == s2[i-1]) {
-                    s1_res[count] = s1[j-1];
-                    s2_res[count] = s2[i-1];
-                } else {
-                    s1_res[count] = s1[j-1] + 32;
-                    s2_res[count] = s2[i-1] + 32;
-                }
-                i--; j--;
+                match(&i, &j, s1, s2, s1_res, s2_res, count);
                 cur = D->cells[i*D->w+j];
                 break;
 
             case 2 :
             case 6 :
-                s1_res[count] = '-';
-                s2_res[count] = s2[i-1] + 32;
-                i--;
+                indel2(&i, &j, s1, s2, s1_res, s2_res, count);
                 cur = V->cells[i*V->w+j];
                 break;
 
             case 4 :
-                s1_res[count] = s1[j-1] + 32;
-                s2_res[count] = '-';
-                j--;
+                indel4(&i, &j, s1, s2, s1_res, s2_res, count);
                 cur = H->cells[i*H->w+j];
                 break;
 
             default :
-                //fprintf(stderr, "%s\nScore %u\n", "Pas de cas correspondant pour prevs", cur.prevs);
-                //exit(1);
                 i = 0; j = 0;
                 count++;
                 break;
