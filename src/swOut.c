@@ -79,15 +79,16 @@ void printBestAlis(struct matrix *mat, struct cost *cost, char *s1, char *s2)
 
             case 2 :
             case 6 :
-                s1_res[count] = s1[j-1] + 32;
-                s2_res[count] = '-';
-                j--;
-                break;
 
-            case 4 :
                 s1_res[count] = '-';
                 s2_res[count] = s2[i-1] + 32;
                 i--;
+                break;
+
+            case 4 :
+            s1_res[count] = s1[j-1] + 32;
+            s2_res[count] = '-';
+            j--;
                 break;
 
             default :
@@ -168,15 +169,15 @@ void printBestAlisGotoh(struct matrix *D, struct matrix *V, struct matrix *H, /*
 
             case 2 :
             case 6 :
-                s1_res[count] = s1[j-1];
-                s2_res[count] = '-';
-                j--;
+            s1_res[count] = '-';
+            s2_res[count] = s2[i-1] + 32;
+            i--;
                 break;
 
             case 4 :
-                s1_res[count] = '-';
-                s2_res[count] = s2[i-1];
-                i--;
+            s1_res[count] = s1[j-1] + 32;
+            s2_res[count] = '-';
+            j--;
                 break;
 
             default :
