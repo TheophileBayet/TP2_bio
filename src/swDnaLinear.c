@@ -21,8 +21,8 @@ int main(void)
 	struct matrix *mat = swInitMat(s1,s2);
 	swFillMat(mat,cost,s1,s2);
 	/* for debugging you can uncomment:*/
-	   swPrintMat(mat);
-	printBestAlis(mat,cost,s1,s2);
+	   //swPrintMat(mat);
+	printAllBests(mat,cost,s1,s2);
 
 	swFreeMat(mat);
 	free(cost);

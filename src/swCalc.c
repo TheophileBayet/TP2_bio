@@ -53,6 +53,9 @@ double* MAX(struct cell c1, struct cell c2, struct cell c3, struct cost *cost,ch
     if(sc1<sc3){ret[0]=sc3; ret[3]=1;}
     else{ret[0]=sc1;ret[1]=1;}
   }
+  if (ret[0] == sc1) {ret[1] = 1;}
+  if (ret[0] == sc2) {ret[2] = 1;}
+  if (ret[0] == sc3) {ret[3] = 1;}
   if(ret[0]<0){
     ret[0]=0;
     ret[1]=0;
@@ -333,7 +336,6 @@ void swFillHMat(struct matrix *D,struct matrix *V,struct matrix *H, struct cost 
 
 /* free all allocated memory in mat */
 void swFreeMat(struct matrix *mat){
-    fprintf(stdout, "\t\t\tswFreeMat\n");
     if (mat != NULL && mat->cells != NULL) {
         free(mat->cells);
     }
