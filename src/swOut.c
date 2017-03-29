@@ -43,6 +43,8 @@ void printBestAlis(struct matrix *mat, struct cost *cost, char *s1, char *s2)
     printf("max = %d en %d, %d \n",max,i,j);
     int ideb=i-1;
     int jdeb=j-1;
+    int ifin=0;
+    int jfin=0;
     // en considérant la case à laquelle on commence, on peut remplir en partie les chaines de résultat
     // remplir à partir d'où jusqu'à où ? OU NE PAS REMPLIR LOL parce que ça ne compte pas
 
@@ -54,8 +56,8 @@ void printBestAlis(struct matrix *mat, struct cost *cost, char *s1, char *s2)
 
         struct cell cur = mat->cells[i*mat->w+j];
 
-        printf("Résultat intermédiaire : %s\n", s1_res + count + 1);
-        printf("Résultat intermédiaire : %s\n\n", s1_res);
+        //printf("Résultat intermédiaire : %s\n", s1_res + count + 1);
+        //printf("Résultat intermédiaire : %s\n\n", s1_res);
         // màj des chemins selon déplacement optimal trouvé
 
         switch(cur.prevs){
@@ -65,27 +67,33 @@ void printBestAlis(struct matrix *mat, struct cost *cost, char *s1, char *s2)
             case 3 :
             case 5 :
             case 7 :
-                s1_res[count] = s1[j-1];
-                s2_res[count] = s2[i-1];
+                if (s1[j-1] == s2[i-1]) {
+                    s1_res[count] = s1[j-1];
+                    s2_res[count] = s2[i-1];
+                } else {
+                    s1_res[count] = s1[j-1] + 32;
+                    s2_res[count] = s2[i-1] + 32;
+                }
                 i--; j--;
                 break;
 
             case 2 :
             case 6 :
-                s1_res[count] = s1[j-1];
+                s1_res[count] = s1[j-1] + 32;
                 s2_res[count] = '-';
                 j--;
                 break;
 
             case 4 :
                 s1_res[count] = '-';
-                s2_res[count] = s2[i-1];
+                s2_res[count] = s2[i-1] + 32;
                 i--;
                 break;
 
             default :
                 //fprintf(stderr, "%s\nScore %u\n", "Pas de cas correspondant pour prevs", cur.prevs);
                 //exit(1);
+                ifin = i ; jfin = j;
                 i = 0; j = 0;
                 break;
 
@@ -95,6 +103,6 @@ void printBestAlis(struct matrix *mat, struct cost *cost, char *s1, char *s2)
     //printf("Résultat final : \n\t%s\n\t%s\n", s1_res + count + 1, s2_res + count + 1);
     printf("Final result : \n");
     printf("s1_res : %s\ns2_res : %s\n", s1_res + count + 1, s2_res + count + 1);
-    printf("Best match is at s1[%d:%d] and s2[%d:%d]\n", j, jdeb, i, ideb);
+    printf("Best match is at s1[%d:%d] and s2[%d:%d]\n", jfin, jdeb, ifin, ideb);
 
 }
