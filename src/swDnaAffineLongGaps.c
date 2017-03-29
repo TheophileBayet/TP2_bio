@@ -32,13 +32,16 @@ int main(void)
     */
 //	printf("Fin de remplissage des matrices\n");
 	/* for debugging you can uncomment:*/
+    /*
     swPrintMat(D);
     printf("\n Test \n");
 	swPrintMat(V);
     printf("\n");
 	swPrintMat(H);
     printf("\n");
-	/*printBestAlis(mat,cost,s1,s2);*/
+    */
+	printBestAlisGotoh(D,V,H,s1,s2);
+
 	swFreeMat(D);
 	swFreeMat(V);
 	swFreeMat(H);
