@@ -1,5 +1,9 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <fcntl.h>           /* For O_* constants */
+#include <sys/stat.h>        /* For mode constants */
+#include <semaphore.h>
+
 #include "swOut.h"
 
 void update_res(char* s1, char* s2, char c1, char c2, int count) {
@@ -136,15 +140,15 @@ void printAllPaths(int i, int j, struct matrix *mat, struct cost *cost, char *s1
         count--;
     }
 
-    //setbuf(stdout, _IONBF);
+    sem_t *sem = sem_open("semaphore", O_CREAT, S_IRWXU, 1);
+    sem_wait(sem);
 
     printf("Final result : \n");
     printf("s1_res : %s\ns2_res : %s\n", s1_res + count + 1, s2_res + count + 1);
     printf("Best match is at s1[%d:%d] and s2[%d:%d]\n", jfin, jdeb, ifin, ideb);
     
-    //fflush(stdout);
+    sem_post(sem);
 
-    //printf("\n\nFinal result : \rs1_res : %s\rs2_res : %s\rBest match is at s1[%d:%d] and s2[%d:%d]\r\n\n", s1_res + count + 1, s2_res + count + 1, jfin, jdeb, ifin, ideb);
     
 }
 
