@@ -138,15 +138,13 @@ void printAllPaths(int i, int j, struct matrix *mat, struct cost *cost, char *s1
         count--;
     }
 
-    sem_t *sem = sem_open("semaphore", O_CREAT, S_IRWXU, 1);
+    sem_t *sem = sem_open("sem", O_CREAT, S_IRWXU, 1);
     sem_wait(sem);
 
     printf("Best match at s1[%d:%d] and s2[%d:%d]\n", jfin, jdeb, ifin, ideb);
     printf("s1_res : %s\ns2_res : %s\n\n", s1_res + count + 1, s2_res + count + 1);
 
     sem_post(sem);
-    sem_close(sem);
-
 
 }
 
