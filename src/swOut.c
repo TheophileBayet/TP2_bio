@@ -70,7 +70,7 @@ void printAllPaths(int i, int j, struct matrix *mat, struct cost *cost, char *s1
 
     while (i!=0 && j!=0){
         struct cell cur = mat->cells[i*mat->w+j];
-        
+
         switch(cur.prevs){
             case 1 :
                 match(&i, &j, s1, s2, s1_res, s2_res, count);
@@ -143,11 +143,11 @@ void printAllPaths(int i, int j, struct matrix *mat, struct cost *cost, char *s1
 
     printf("Best match at s1[%d:%d] and s2[%d:%d]\n", jfin, jdeb, ifin, ideb);
     printf("s1_res : %s\ns2_res : %s\n\n", s1_res + count + 1, s2_res + count + 1);
-    
+
     sem_post(sem);
     sem_close(sem);
 
-    
+
 }
 
 void printBestAlisGotoh(struct matrix *D, struct matrix *V, struct matrix *H, /*struct cost *cost,*/char *s1, char *s2)
@@ -167,7 +167,7 @@ void printBestAlisGotoh(struct matrix *D, struct matrix *V, struct matrix *H, /*
 
     unsigned int count = strlen(s1_res) - 1;
 
-        int max = 0;
+    int max = 0;
     for (uint32_t k1 = 0; k1<D->h; k1++){
         for (uint32_t k2 = 0; k2<D->w; k2++){
             if (D->cells[D->w*k1+k2].score>max){
@@ -178,7 +178,7 @@ void printBestAlisGotoh(struct matrix *D, struct matrix *V, struct matrix *H, /*
         }
     }
 
-        printf("max = %d en %d, %d \n",max,i,j);
+    printf("max = %d en %d, %d \n",max,i,j);
     int ideb=i-1;
     int jdeb=j-1;
     struct cell cur = D->cells[i*D->w+j];
@@ -209,7 +209,7 @@ void printBestAlisGotoh(struct matrix *D, struct matrix *V, struct matrix *H, /*
                 count++;
                 break;
         }
-    count--;
+        count--;
     }
     printf("Final result : \n");
     printf("s1_res : %s\ns2_res : %s\n", s1_res + count + 1, s2_res + count + 1);
