@@ -75,6 +75,9 @@ void printAllPaths(int i, int j, struct matrix *mat, struct cost *cost, char *s1
             case 1 :
                 match(&i, &j, s1, s2, s1_res, s2_res, count);
                 break;
+            case 2 :
+                indel2(&i, &j, s1, s2, s1_res, s2_res, count);
+                break;
             case 3 :
                 switch(fork()) {
                     case 0 :
@@ -85,10 +88,23 @@ void printAllPaths(int i, int j, struct matrix *mat, struct cost *cost, char *s1
                         break;
                 }
                 break;
+            case 4 :
+                indel4(&i, &j, s1, s2, s1_res, s2_res, count);
+                break;
             case 5 :
                 switch(fork()) {
                     case 0 :
                         match(&i, &j, s1, s2, s1_res, s2_res, count);
+                        break;
+                    default:
+                        indel4(&i, &j, s1, s2, s1_res, s2_res, count);
+                        break;
+                }
+                break;
+            case 6 :
+                switch(fork()) {
+                    case 0 :
+                        indel2(&i, &j, s1, s2, s1_res, s2_res, count);
                         break;
                     default:
                         indel4(&i, &j, s1, s2, s1_res, s2_res, count);
@@ -112,24 +128,6 @@ void printAllPaths(int i, int j, struct matrix *mat, struct cost *cost, char *s1
                         break;
                 }
                 break;
-            case 2 :
-                indel2(&i, &j, s1, s2, s1_res, s2_res, count);
-                break;
-            case 6 :
-                switch(fork()) {
-                    case 0 :
-                        indel2(&i, &j, s1, s2, s1_res, s2_res, count);
-                        break;
-                    default:
-                        indel4(&i, &j, s1, s2, s1_res, s2_res, count);
-                        break;
-                }
-                break;
-
-            case 4 :
-                indel4(&i, &j, s1, s2, s1_res, s2_res, count);
-                break;
-
             default :
                 ifin = i ; jfin = j;
                 i = 0; j = 0;
@@ -143,11 +141,11 @@ void printAllPaths(int i, int j, struct matrix *mat, struct cost *cost, char *s1
     sem_t *sem = sem_open("semaphore", O_CREAT, S_IRWXU, 1);
     sem_wait(sem);
 
-    printf("Final result : \n");
-    printf("s1_res : %s\ns2_res : %s\n", s1_res + count + 1, s2_res + count + 1);
-    printf("Best match is at s1[%d:%d] and s2[%d:%d]\n", jfin, jdeb, ifin, ideb);
+    printf("Best match at s1[%d:%d] and s2[%d:%d]\n", jfin, jdeb, ifin, ideb);
+    printf("s1_res : %s\ns2_res : %s\n\n", s1_res + count + 1, s2_res + count + 1);
     
     sem_post(sem);
+    sem_close(sem);
 
     
 }
