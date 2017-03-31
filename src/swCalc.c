@@ -6,9 +6,6 @@
 #include "mem.h"
 #include "swCalc.h"
 
-
-
-
 /* allocate and initialize (first row and col) a matrix for SW
    alignment of strings s1 and s2 */
 struct matrix *swInitMat(char *s1, char *s2){
@@ -43,9 +40,11 @@ void setRet(double* ret, int sc1 , int sc2, int sc3) {
         if(sc1<sc3){ret[0]=sc3; ret[3]=1;}
         else{ret[0]=sc1;ret[1]=1;}
     }
-    if (ret[0] == sc1) {ret[1] = 1;}
-    if (ret[0] == sc2) {ret[2] = 1;}
-    if (ret[0] == sc3) {ret[3] = 1;}
+    /*
+    if (ret[0] == sc1 && ret[0] != 0) {ret[1] = 1;}
+    if (ret[0] == sc2 && ret[0] != 0) {ret[2] = 1;}
+    if (ret[0] == sc3 && ret[0] != 0) {ret[3] = 1;}
+    */
     if(ret[0]<0){
         ret[0]=0;
         ret[1]=0;

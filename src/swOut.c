@@ -48,13 +48,13 @@ void printAllBests(struct matrix *mat,  struct cost *cost, char *s1, char *s2) {
     for (uint32_t k1 = 0; k1<mat->h; k1++){
         for (uint32_t k2 = 0; k2<mat->w; k2++){
             if (mat->cells[mat->w*k1+k2].score == max){
-                printAllPaths(k1, k2, mat, cost, s1, s2);
+                printAllPaths(k1, k2, max, mat, cost, s1, s2);
             }
         }
     }
 }
 
-void printAllPaths(int i, int j, struct matrix *mat, struct cost *cost, char *s1, char *s2) {
+void printAllPaths(int i, int j, int score, struct matrix *mat, struct cost *cost, char *s1, char *s2) {
     char s1_res[strlen(s1)+strlen(s2)]; // résultat avec letters et '-' pour s1
     char s2_res[strlen(s1)+strlen(s2)]; // résultat avec letters et '-' pour s2
 
@@ -141,76 +141,149 @@ void printAllPaths(int i, int j, struct matrix *mat, struct cost *cost, char *s1
     sem_t *sem = sem_open("sem", O_CREAT, S_IRWXU, 1);
     sem_wait(sem);
 
-    printf("Best match at s1[%d:%d] and s2[%d:%d]\n", jfin, jdeb, ifin, ideb);
-    printf("s1_res : %s\ns2_res : %s\n\n", s1_res + count + 1, s2_res + count + 1);
+    printf("Best match at s1[%d:%d] and s2[%d:%d], score : %i\n", jfin, jdeb, ifin, ideb, score);
 
+    for(int i = count + 1 ; i < strlen(s1_res) ; i += 80) {
+        printf("s1_res: %.100s\ns2_res: %.100s\n\n", s1_res + i, s2_res + i);
+    }
     sem_post(sem);
 
 }
 
-void printBestAlisGotoh(struct matrix *D, struct matrix *V, struct matrix *H, /*struct cost *cost,*/char *s1, char *s2)
-{
-    fprintf(stdout, "printBestAlisGotoh\n");
 
-    unsigned int i = D->h-1;
-    unsigned int j = D->w-1;
+void printAllBestsGotoh(struct matrix *D, struct matrix *V, struct matrix *H,  /*struct cost *cost,*/ char *s1, char *s2) {
 
-    char s1_res[strlen(s1)+strlen(s2)]; // résultat avec letters et '-' pour s1
-    char s2_res[strlen(s1)+strlen(s2)]; // résultat avec letters et '-' pour s2
+    fprintf(stdout, "printBestAlis\n");
 
-    strcpy(s1_res, s1);
-    strcat(s1_res, s2);
-    strcpy(s2_res, s1);
-    strcat(s2_res, s2);
-
-    unsigned int count = strlen(s1_res) - 1;
-
+    // search the max score
     int max = 0;
-    for (uint32_t k1 = 0; k1<D->h; k1++){
-        for (uint32_t k2 = 0; k2<D->w; k2++){
+    for (uint32_t k1 = 0 ; k1 < D->h; k1++){
+        for (uint32_t k2 = 0 ; k2 < D->w ; k2++){
             if (D->cells[D->w*k1+k2].score>max){
-                i=k1;
-                j=k2;
                 max=D->cells[D->w*k1+k2].score;
             }
         }
     }
+    // print the path for all the cells of max score
+    for (uint32_t k1 = 0 ; k1 < D->h ; k1++){
+        for (uint32_t k2 = 0 ; k2 < D->w ; k2++){
+            if (D->cells[D->w*k1+k2].score == max){
+                printAllPathsGotoh(k1, k2, max, D, V, H, /*cost,*/ s1, s2);
+            }
+        }
+    }
+}
 
-    printf("max = %d en %d, %d \n",max,i,j);
+
+void printAllPathsGotoh(int i, int j, int score, struct matrix *D, struct matrix *V, struct matrix *H, /*struct cost *cost,*/char *s1, char *s2)
+{
+    char s1_res[strlen(s1)+strlen(s2)]; // résultat avec letters et '-' pour s1
+    char s2_res[strlen(s1)+strlen(s2)]; // résultat avec letters et '-' pour s2
+
+    strcpy(s1_res, s1); strcat(s1_res, s2);
+    strcpy(s2_res, s1); strcat(s2_res, s2);
+
+    unsigned int count = strlen(s1_res) - 1;
+
     int ideb=i-1;
     int jdeb=j-1;
-    struct cell cur = D->cells[i*D->w+j];
-    while (i!=0 && j!=0){
-        switch(cur.prevs){
+    int ifin=0;
+    int jfin=0;
 
+    struct cell cur = D->cells[i*D->w+j];
+
+    while (i!=0 && j!=0){
+
+        printf("cur.prevs : %i\n", cur.prevs);
+
+        switch(cur.prevs){
             case 1 :
-            case 3 :
-            case 5 :
-            case 7 :
                 match(&i, &j, s1, s2, s1_res, s2_res, count);
                 cur = D->cells[i*D->w+j];
                 break;
-
             case 2 :
-            case 6 :
                 indel2(&i, &j, s1, s2, s1_res, s2_res, count);
                 cur = V->cells[i*V->w+j];
                 break;
-
+            case 3 :
+                switch(fork()) {
+                    case 0 :
+                        match(&i, &j, s1, s2, s1_res, s2_res, count);
+                        cur = D->cells[i*D->w+j];
+                        break;
+                    default:
+                        indel2(&i, &j, s1, s2, s1_res, s2_res, count);
+                        cur = V->cells[i*V->w+j];
+                        break;
+                }
+                break;
             case 4 :
                 indel4(&i, &j, s1, s2, s1_res, s2_res, count);
                 cur = H->cells[i*H->w+j];
                 break;
-
+            case 5 :
+                switch(fork()) {
+                    case 0 :
+                        match(&i, &j, s1, s2, s1_res, s2_res, count);
+                        cur = D->cells[i*D->w+j];
+                        break;
+                    default:
+                        indel4(&i, &j, s1, s2, s1_res, s2_res, count);
+                        cur = H->cells[i*H->w+j];
+                        break;
+                }
+                break;
+            case 6 :
+                switch(fork()) {
+                    case 0 :
+                        indel2(&i, &j, s1, s2, s1_res, s2_res, count);
+                        cur = V->cells[i*V->w+j];
+                        break;
+                    default:
+                        indel4(&i, &j, s1, s2, s1_res, s2_res, count);
+                        cur = H->cells[i*H->w+j];
+                        break;
+                }
+                break;
+            case 7 :
+                switch(fork()) {
+                    case 0 :
+                        match(&i, &j, s1, s2, s1_res, s2_res, count);
+                        cur = D->cells[i*D->w+j];
+                        break;
+                    default:
+                        switch(fork()) {
+                            case 0 :
+                                indel2(&i, &j, s1, s2, s1_res, s2_res, count);
+                                cur = V->cells[i*V->w+j];
+                                break;
+                            default:
+                                indel4(&i, &j, s1, s2, s1_res, s2_res, count);
+                                cur = H->cells[i*H->w+j];
+                                break;
+                        }
+                        break;
+                }
+                break;
             default :
+                ifin = i ; jfin = j;
                 i = 0; j = 0;
+                // loop without updating res
                 count++;
                 break;
         }
         count--;
     }
-    printf("Final result : \n");
-    printf("s1_res : %s\ns2_res : %s\n", s1_res + count + 1, s2_res + count + 1);
-    printf("Best match is at s1[:] and s2[:]\n");
+
+    sem_t *sem = sem_open("sem", O_CREAT, S_IRWXU, 1);
+    sem_wait(sem);
+
+    printf("Best match at s1[%d:%d] and s2[%d:%d], score : %i\n", jfin, jdeb, ifin, ideb, score);
+
+    for(int i = count + 1 ; i < strlen(s1_res) ; i += 100) {
+        printf("s1_res: %.100s\ns2_res: %.100s\n\n", s1_res + i, s2_res + i);
+    }
+    sem_post(sem);
+
 
 }
