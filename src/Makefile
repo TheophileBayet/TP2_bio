@@ -8,6 +8,8 @@ etu: swDnaLinear
 
 aff : swDnaAffineLongGaps
 
+prot : swProtAffine
+
 all: swDnaLinear swDnaAffine swDnaAffineLongGaps swProtAffine
 
 swDnaLinear: swDnaLinear.o $(OBJS)
