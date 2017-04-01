@@ -151,6 +151,9 @@ void swFillVMat(int i, int j, struct matrix *D,struct matrix *V,struct matrix *H
     // Fonction max sur les trois précédents, conserver la valeur dans la cell
     // et modifier les prevs !
     double* max_tab = max_V(D->cells[w*(i-1)+j],V->cells[w*(i-1)+j],H->cells[w*(i-1)+j],cost);
+    if (max_tab[0] == 0) {
+        max_tab[0] = -1;
+    }
     swFillCell(V, max_tab, w, i, j);
     free(max_tab);
 }
@@ -160,6 +163,9 @@ void swFillHMat(int i, int j, struct matrix *D,struct matrix *V,struct matrix *H
     // Fonction max sur les trois précédents, conserver la valeur dans la cell
     // et modifier les prevs !
     double* max_tab = max_H(D->cells[w*i+j-1],V->cells[w*i+j-1],H->cells[w*i+j-1],cost);
+    if (max_tab[0] == 0) {
+        max_tab[0] = -1;
+    }
     swFillCell(H, max_tab, w, i, j);
     free(max_tab);
 }
