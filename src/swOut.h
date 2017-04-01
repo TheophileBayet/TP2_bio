@@ -13,6 +13,6 @@ void printAllBests(struct matrix *mat, struct cost *cost, char *s1, char *s2) ;
 void printAllBestsGotoh(struct matrix *D, struct matrix *V,
         struct matrix *H, /*struct cost *cost,*/char *s1, char *s2);
 
-void printAllPaths(int i, int j, int score, struct matrix *mat, struct cost *cost, char *s1, char *s2);
-void printAllPathsGotoh(int i, int j, int score, struct matrix *D, struct matrix *V, struct matrix *H, /*struct cost *cost,*/char *s1, char *s2);
+void printAllPaths(int i, int j, double score, struct matrix *mat, struct cost *cost, char *s1, char *s2);
+void printAllPathsGotoh(int i, int j, double score, struct matrix *D, struct matrix *V, struct matrix *H, /*struct cost *cost,*/char *s1, char *s2);
 #endif

@@ -29,7 +29,7 @@ struct matrix *swInitMat(char *s1, char *s2){
     return mat;
 }
 
-void setRet(double* ret, int sc1 , int sc2, int sc3) {
+void setRet(double* ret, double sc1 , double sc2, double sc3) {
     ret[1]=0;
     ret[2]=0;
     ret[3]=0;
@@ -40,11 +40,11 @@ void setRet(double* ret, int sc1 , int sc2, int sc3) {
         if(sc1<sc3){ret[0]=sc3; ret[3]=1;}
         else{ret[0]=sc1;ret[1]=1;}
     }
-    /*
+    
     if (ret[0] == sc1 && ret[0] != 0) {ret[1] = 1;}
     if (ret[0] == sc2 && ret[0] != 0) {ret[2] = 1;}
     if (ret[0] == sc3 && ret[0] != 0) {ret[3] = 1;}
-    */
+    
     if(ret[0]<0){
         ret[0]=0;
         ret[1]=0;
@@ -54,36 +54,36 @@ void setRet(double* ret, int sc1 , int sc2, int sc3) {
 }
 double* max(struct cell c1, struct cell c2, struct cell c3, struct cost *cost,char s1, char s2){
     double *ret = mallocOrDie(4*sizeof(double),"E:failed to create tab in max");
-    int sc1 = c1.score + cost->subst(s1,s2);
-    int sc2 = c2.score + cost->indelOpen;
-    int sc3 = c3.score + cost->indelOpen;
+    double sc1 = c1.score + cost->subst(s1,s2);
+    double sc2 = c2.score + cost->indelOpen;
+    double sc3 = c3.score + cost->indelOpen;
     setRet(ret, sc1, sc2, sc3);
     return ret;
 }
 
 double* max_D(struct cell c1, struct cell c2, struct cell c3, struct cost *cost,char s1, char s2){
     double *ret = mallocOrDie(4*sizeof(double),"E:failed to create tab in max");
-    int sc1 = c1.score + cost->subst(s1,s2);
-    int sc2 = c2.score + cost->subst(s1,s2);
-    int sc3 = c3.score + cost->subst(s1,s2);
+    double sc1 = c1.score + cost->subst(s1,s2);
+    double sc2 = c2.score + cost->subst(s1,s2);
+    double sc3 = c3.score + cost->subst(s1,s2);
     setRet(ret, sc1, sc2, sc3);
     return ret;
 }
 
 double* max_V(struct cell c1, struct cell c2, struct cell c3, struct cost *cost){
     double *ret = mallocOrDie(4*sizeof(double),"E:failed to create tab in max");
-    int sc1 = c1.score + cost->indelOpen;
-    int sc2 = c2.score + cost->indelExtend;
-    int sc3 = c3.score + cost->indelOpen;
+    double sc1 = c1.score + cost->indelOpen;
+    double sc2 = c2.score + cost->indelExtend;
+    double sc3 = c3.score + cost->indelOpen;
     setRet(ret, sc1, sc2, sc3);
     return ret;
 }
 
 double* max_H(struct cell c1, struct cell c2, struct cell c3, struct cost *cost){
     double *ret = mallocOrDie(4*sizeof(double),"E:failed to create tab in max");
-    int sc1 = c1.score + cost->indelOpen;
-    int sc2 = c2.score + cost->indelOpen;
-    int sc3 = c3.score + cost->indelExtend;
+    double sc1 = c1.score + cost->indelOpen;
+    double sc2 = c2.score + cost->indelOpen;
+    double sc3 = c3.score + cost->indelExtend;
     setRet(ret, sc1, sc2, sc3);
     return ret;
 }
@@ -126,7 +126,14 @@ void swFillMat(struct matrix *mat, struct cost *cost, char *s1, char *s2) {
 void swFillDVH(struct matrix *D,struct matrix *V,struct matrix *H, struct cost *cost, char *s1, char *s2) {
     int w = strlen(s1)+1;
     int h = strlen(s2)+1;
-
+    for(int j = 0 ; j < w ; j++) {
+        H->cells[j].score = -1;
+        V->cells[j].score = -1;
+    }
+    for(int i = 0 ; i < h ; i++) {
+        H->cells[w*i].score = -1;
+        V->cells[w*i].score = -1;
+    }
     for(int i =1;i<h;i++){
         for(int j=1;j<w;j++){
             swFillDMat(i,j, D, V, H, cost, s1, s2);

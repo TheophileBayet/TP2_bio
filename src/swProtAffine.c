@@ -24,8 +24,6 @@ int main(void)
 	struct matrix *H = swInitMat(s1,s2);
 
 	swFillDVH(D,V,H,cost,s1,s2);
-	/* for debugging you can uncomment:
-	   swPrintMat(mat); */
 	printBestAlisGotoh(D,V,H,s1,s2);
 
 	swFreeMat(D);

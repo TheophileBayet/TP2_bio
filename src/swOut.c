@@ -3,6 +3,7 @@
 #include <fcntl.h>           /* For O_* constants */
 #include <sys/stat.h>        /* For mode constants */
 #include <semaphore.h>
+#include <stdbool.h>
 
 #include "swOut.h"
 
@@ -31,12 +32,43 @@ void indel4(int* i, int* j, char* s1, char* s2, char* s1_res, char* s2_res, int 
     *j = *j - 1;
 }
 
+void case1Gotoh(struct cell* cur, char* currentMat, struct matrix* D, int* i, int* j, char* s1, char* s2, char* s1_res, char* s2_res, int count) {
+    if (*currentMat == 'H') {
+        indel4(i, j, s1, s2, s1_res, s2_res, count);
+    } else if (*currentMat == 'V') {
+        indel2(i, j, s1, s2, s1_res, s2_res, count);
+    } else {
+        match(i, j, s1, s2, s1_res, s2_res, count);
+    }
+    *currentMat = 'D';
+    *cur = D->cells[(*i)*D->w+(*j)];
+}
+
+void case2Gotoh(struct cell* cur, char* currentMat, struct matrix* V, int* i, int* j, char* s1, char* s2, char* s1_res, char* s2_res, int count) {
+    if (*currentMat == 'V') {
+        indel2(i, j, s1, s2, s1_res, s2_res, count);
+    } else {
+        *currentMat = 'V';
+        match(i, j, s1, s2, s1_res, s2_res, count);
+    }
+    *cur = V->cells[(*i)*V->w+(*j)];
+}
+
+void case4Gotoh(struct cell* cur, char* currentMat, struct matrix* H, int* i, int* j, char* s1, char* s2, char* s1_res, char* s2_res, int count) {
+    if (*currentMat == 'H') {
+        indel4(i, j, s1, s2, s1_res, s2_res, count);
+    } else {
+        *currentMat = 'H';
+        match(i, j, s1, s2, s1_res, s2_res, count);
+    }
+    *cur = H->cells[(*i)*H->w+(*j)];
+}
+
 void printAllBests(struct matrix *mat,  struct cost *cost, char *s1, char *s2) {
 
     fprintf(stdout, "printBestAlis\n");
-
     // search the max score
-    int max = 0;
+    double max = 0;
     for (uint32_t k1 = 0; k1<mat->h; k1++){
         for (uint32_t k2 = 0; k2<mat->w; k2++){
             if (mat->cells[mat->w*k1+k2].score>max){
@@ -54,7 +86,7 @@ void printAllBests(struct matrix *mat,  struct cost *cost, char *s1, char *s2) {
     }
 }
 
-void printAllPaths(int i, int j, int score, struct matrix *mat, struct cost *cost, char *s1, char *s2) {
+void printAllPaths(int i, int j, double score, struct matrix *mat, struct cost *cost, char *s1, char *s2) {
     char s1_res[strlen(s1)+strlen(s2)]; // résultat avec letters et '-' pour s1
     char s2_res[strlen(s1)+strlen(s2)]; // résultat avec letters et '-' pour s2
 
@@ -141,9 +173,9 @@ void printAllPaths(int i, int j, int score, struct matrix *mat, struct cost *cos
     sem_t *sem = sem_open("sem", O_CREAT, S_IRWXU, 1);
     sem_wait(sem);
 
-    printf("Best match at s1[%d:%d] and s2[%d:%d], score : %i\n", jfin, jdeb, ifin, ideb, score);
+    printf("Best match at s1[%d:%d] and s2[%d:%d], score : %f\n", jfin, jdeb, ifin, ideb, score);
 
-    for(uint32_t i = count + 1 ; i < strlen(s1_res) ; i += 80) {
+    for(uint32_t i = count + 1 ; i < strlen(s1_res) ; i += 100) {
         printf("s1_res: %.100s\ns2_res: %.100s\n\n", s1_res + i, s2_res + i);
     }
     sem_post(sem);
@@ -156,7 +188,7 @@ void printAllBestsGotoh(struct matrix *D, struct matrix *V, struct matrix *H,  /
     fprintf(stdout, "printBestAlis\n");
 
     // search the max score
-    int max = 0;
+    double max = 0;
     for (uint32_t k1 = 0 ; k1 < D->h; k1++){
         for (uint32_t k2 = 0 ; k2 < D->w ; k2++){
             if (D->cells[D->w*k1+k2].score>max){
@@ -164,6 +196,9 @@ void printAllBestsGotoh(struct matrix *D, struct matrix *V, struct matrix *H,  /
             }
         }
     }
+    
+    fprintf(stdout, "socre max : %f\n", max);
+    
     // print the path for all the cells of max score
     for (uint32_t k1 = 0 ; k1 < D->h ; k1++){
         for (uint32_t k2 = 0 ; k2 < D->w ; k2++){
@@ -175,7 +210,7 @@ void printAllBestsGotoh(struct matrix *D, struct matrix *V, struct matrix *H,  /
 }
 
 
-void printAllPathsGotoh(int i, int j, int score, struct matrix *D, struct matrix *V, struct matrix *H, /*struct cost *cost,*/char *s1, char *s2)
+void printAllPathsGotoh(int i, int j, double score, struct matrix *D, struct matrix *V, struct matrix *H, /*struct cost *cost,*/char *s1, char *s2)
 {
     char s1_res[strlen(s1)+strlen(s2)]; // résultat avec letters et '-' pour s1
     char s2_res[strlen(s1)+strlen(s2)]; // résultat avec letters et '-' pour s2
@@ -191,75 +226,63 @@ void printAllPathsGotoh(int i, int j, int score, struct matrix *D, struct matrix
     int jfin=0;
 
     struct cell cur = D->cells[i*D->w+j];
+    
+    char currentMat = 'D';
 
     while (i!=0 && j!=0){
 
-        printf("cur.prevs : %i\n", cur.prevs);
-
         switch(cur.prevs){
             case 1 :
-                match(&i, &j, s1, s2, s1_res, s2_res, count);
-                cur = D->cells[i*D->w+j];
+                case1Gotoh(&cur, &currentMat, D, &i, &j, s1, s2, s1_res, s2_res, count);
                 break;
             case 2 :
-                indel2(&i, &j, s1, s2, s1_res, s2_res, count);
-                cur = V->cells[i*V->w+j];
+                case2Gotoh(&cur, &currentMat, V, &i, &j, s1, s2, s1_res, s2_res, count);
                 break;
             case 3 :
                 switch(fork()) {
                     case 0 :
-                        match(&i, &j, s1, s2, s1_res, s2_res, count);
-                        cur = D->cells[i*D->w+j];
+                        case1Gotoh(&cur, &currentMat, D, &i, &j, s1, s2, s1_res, s2_res, count);
                         break;
                     default:
-                        indel2(&i, &j, s1, s2, s1_res, s2_res, count);
-                        cur = V->cells[i*V->w+j];
+                        case2Gotoh(&cur, &currentMat, V, &i, &j, s1, s2, s1_res, s2_res, count);
                         break;
                 }
                 break;
             case 4 :
-                indel4(&i, &j, s1, s2, s1_res, s2_res, count);
-                cur = H->cells[i*H->w+j];
+                case4Gotoh(&cur, &currentMat, H, &i, &j, s1, s2, s1_res, s2_res, count);
                 break;
             case 5 :
                 switch(fork()) {
                     case 0 :
-                        match(&i, &j, s1, s2, s1_res, s2_res, count);
-                        cur = D->cells[i*D->w+j];
+                        case1Gotoh(&cur, &currentMat, D, &i, &j, s1, s2, s1_res, s2_res, count);
                         break;
                     default:
-                        indel4(&i, &j, s1, s2, s1_res, s2_res, count);
-                        cur = H->cells[i*H->w+j];
+                        case4Gotoh(&cur, &currentMat, H, &i, &j, s1, s2, s1_res, s2_res, count);
                         break;
                 }
                 break;
             case 6 :
                 switch(fork()) {
                     case 0 :
-                        indel2(&i, &j, s1, s2, s1_res, s2_res, count);
-                        cur = V->cells[i*V->w+j];
+                        case2Gotoh(&cur, &currentMat, V, &i, &j, s1, s2, s1_res, s2_res, count);
                         break;
                     default:
-                        indel4(&i, &j, s1, s2, s1_res, s2_res, count);
-                        cur = H->cells[i*H->w+j];
+                        case4Gotoh(&cur, &currentMat, H, &i, &j, s1, s2, s1_res, s2_res, count);
                         break;
                 }
                 break;
             case 7 :
                 switch(fork()) {
                     case 0 :
-                        match(&i, &j, s1, s2, s1_res, s2_res, count);
-                        cur = D->cells[i*D->w+j];
+                        case1Gotoh(&cur, &currentMat, D, &i, &j, s1, s2, s1_res, s2_res, count);
                         break;
                     default:
                         switch(fork()) {
                             case 0 :
-                                indel2(&i, &j, s1, s2, s1_res, s2_res, count);
-                                cur = V->cells[i*V->w+j];
+                                case2Gotoh(&cur, &currentMat, V, &i, &j, s1, s2, s1_res, s2_res, count);
                                 break;
                             default:
-                                indel4(&i, &j, s1, s2, s1_res, s2_res, count);
-                                cur = H->cells[i*H->w+j];
+                                case4Gotoh(&cur, &currentMat, H, &i, &j, s1, s2, s1_res, s2_res, count);
                                 break;
                         }
                         break;
@@ -278,7 +301,7 @@ void printAllPathsGotoh(int i, int j, int score, struct matrix *D, struct matrix
     sem_t *sem = sem_open("sem", O_CREAT, S_IRWXU, 1);
     sem_wait(sem);
 
-    printf("Best match at s1[%d:%d] and s2[%d:%d], score : %i\n", jfin, jdeb, ifin, ideb, score);
+    printf("Best match at s1[%d:%d] and s2[%d:%d], score : %f\n", jfin, jdeb, ifin, ideb, score);
 
     for(uint32_t i = count + 1 ; i < strlen(s1_res) ; i += 100) {
         printf("s1_res: %.100s\ns2_res: %.100s\n\n", s1_res + i, s2_res + i);
