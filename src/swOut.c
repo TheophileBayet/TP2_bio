@@ -143,7 +143,7 @@ void printAllPaths(int i, int j, int score, struct matrix *mat, struct cost *cos
 
     printf("Best match at s1[%d:%d] and s2[%d:%d], score : %i\n", jfin, jdeb, ifin, ideb, score);
 
-    for(int i = count + 1 ; i < strlen(s1_res) ; i += 80) {
+    for(uint32_t i = count + 1 ; i < strlen(s1_res) ; i += 80) {
         printf("s1_res: %.100s\ns2_res: %.100s\n\n", s1_res + i, s2_res + i);
     }
     sem_post(sem);
@@ -280,7 +280,7 @@ void printAllPathsGotoh(int i, int j, int score, struct matrix *D, struct matrix
 
     printf("Best match at s1[%d:%d] and s2[%d:%d], score : %i\n", jfin, jdeb, ifin, ideb, score);
 
-    for(int i = count + 1 ; i < strlen(s1_res) ; i += 100) {
+    for(uint32_t i = count + 1 ; i < strlen(s1_res) ; i += 100) {
         printf("s1_res: %.100s\ns2_res: %.100s\n\n", s1_res + i, s2_res + i);
     }
     sem_post(sem);
